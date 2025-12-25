@@ -5,6 +5,7 @@ from .models import Post,AboutUs
 from django.http import Http404
 from .forms import ContactForm
 from .models import Contact
+from django.db.models import Q
 # Create your views here.
 #Static demo data
 # posts = [
@@ -61,3 +62,27 @@ def about(request):
         about_content = about_content.content
 
     return render(request,'blog/about.html',{'about_content':about_content})
+
+def post_detail(request, id):
+    post = get_object_or_404(Post, id=id)
+    related_posts = Post.objects.exclude(id=id)[:3]
+
+    return render(request, 'blog/detail.html', {
+        'post': post,
+        'related_posts': related_posts
+    })
+
+def search(request):
+    query = request.GET.get('q')   # input name="q"
+    results = []
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query)
+        )
+
+    return render(request, 'blog/search_results.html', {
+        'query': query,
+        'results': results
+    })

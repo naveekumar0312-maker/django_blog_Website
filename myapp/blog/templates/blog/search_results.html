@@ -1,0 +1,30 @@
+{% extends "blog/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <h3>
+    Search results for: <strong>"{{ query }}"</strong>
+  </h3>
+
+  {% if results %}
+    <ul class="list-group mt-3">
+      {% for post in results %}
+        <li class="list-group-item">
+          <h5>{{ post.title }}</h5>
+          <p>{{ post.content|truncatewords:25 }}</p>
+          <a href="{% url 'post_detail' post.id %}">
+            Read more →
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted mt-3 d-flex align-items-center gap-2">
+  <i class="bi bi-search"></i>
+  No results found
+</p>
+
+  {% endif %}
+</div>
+
+{% endblock %}
